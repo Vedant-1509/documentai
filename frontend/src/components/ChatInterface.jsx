@@ -9,12 +9,11 @@ export default function ChatInterface({ user, onLogout }) {
   const [url, setUrl] = useState('');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -31,11 +30,11 @@ export default function ChatInterface({ user, onLogout }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!question.trim() || loading || !mode) return;
+    if ( loading || !mode) return;
 
     const userMessage = { sender: 'user', content: question.trim() };
     const currentQuestion = question.trim();
-    
+
     // Immediately add user message and clear input
     setChatHistory((prev) => [...prev, userMessage]);
     setQuestion('');
@@ -43,7 +42,7 @@ export default function ChatInterface({ user, onLogout }) {
 
     try {
       let res;
-      
+
       if (mode === 'stored') {
         res = await axios.post('http://localhost:8080/api/ask', null, {
           params: { companyName: user.businessName, question: currentQuestion },
@@ -71,7 +70,7 @@ export default function ChatInterface({ user, onLogout }) {
 
       const apiRes = res.data;
       console.log('API Response:', apiRes);
-      
+
       let botAnswer;
       if (apiRes?.success) {
         botAnswer = apiRes.data;
@@ -138,7 +137,7 @@ export default function ChatInterface({ user, onLogout }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#130828] via-[#1f1140] to-[#2a1b59] text-white">
-      
+
       {/* Top Navbar */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#1f1140]/80 shadow-md flex-shrink-0">
         <h1 className="text-xl font-semibold tracking-wide text-white">
@@ -178,11 +177,10 @@ export default function ChatInterface({ user, onLogout }) {
                 className={`w-full flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} px-2`}
               >
                 <div
-                  className={`px-4 py-3 rounded-xl shadow-md max-w-[70%] break-words ${
-                    msg.sender === 'user'
+                  className={`px-4 py-3 rounded-xl shadow-md max-w-[70%] break-words ${msg.sender === 'user'
                       ? 'bg-[#dcf8c6] text-black rounded-bl-xl'
                       : 'bg-white text-black rounded-br-xl'
-                  }`}
+                    }`}
                 >
                   <div className="whitespace-pre-wrap">{msg.content}</div>
                   <div className="text-xs text-right text-gray-600 mt-1">
@@ -213,7 +211,7 @@ export default function ChatInterface({ user, onLogout }) {
       {/* Input Area */}
       <div className="flex-shrink-0 w-full px-4 pb-6 pt-2">
         <div className="max-w-4xl mx-auto">
-          
+
           {/* Mode Selection */}
           {!mode && (
             <div className="mb-6">
@@ -247,7 +245,7 @@ export default function ChatInterface({ user, onLogout }) {
           {/* Input Form */}
           {mode && (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              
+
               {/* Mode Header */}
               <div className="flex items-center justify-between bg-white/10 px-4 py-2 rounded-lg">
                 <span className="text-sm font-medium">
@@ -289,7 +287,6 @@ export default function ChatInterface({ user, onLogout }) {
                     type="file"
                     accept=".pdf"
                     onChange={(e) => setFile(e.target.files[0])}
-                    required
                   />
                   {file && (
                     <p className="text-xs text-white/70">Selected: {file.name}</p>
@@ -307,10 +304,10 @@ export default function ChatInterface({ user, onLogout }) {
                   onChange={(e) => setQuestion(e.target.value)}
                   onKeyPress={handleKeyPress}
                   disabled={loading}
-                  required
+                  
                   autoComplete="off"
                 />
-                <button
+                {/* <button
                   type="submit"
                   disabled={loading || !question.trim()}
                   className={`px-6 py-3 text-xl transition duration-200 ${
@@ -324,7 +321,22 @@ export default function ChatInterface({ user, onLogout }) {
                   ) : (
                     '➤'
                   )}
+                </button> */}
+                <button
+                  type="submit"
+                  disabled={loading || (mode !== 'upload' && !question.trim())}
+                  className={`px-6 py-3 text-xl transition duration-200 ${loading || (mode !== 'upload' && !question.trim())
+                      ? 'text-white/40 cursor-not-allowed'
+                      : 'text-white hover:text-blue-400 hover:scale-110'
+                    }`}
+                >
+                  {loading ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white/40"></div>
+                  ) : (
+                    '➤'
+                  )}
                 </button>
+
               </div>
             </form>
           )}
