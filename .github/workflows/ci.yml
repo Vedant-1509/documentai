@@ -1,10 +1,8 @@
-name: documentai CI
+name: DocAI CI
 
 on:
   push:
-    branches: [main, dev]
-  pull_request:
-    branches: [main, dev]
+    branches: main
 
 jobs:
   backend-js:
