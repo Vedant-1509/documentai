@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "tsc"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
