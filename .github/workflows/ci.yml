@@ -69,6 +69,6 @@ jobs:
 
       - name: Build JAR
         run: |
-          cd restAPI
+          cd restapi
           mvn clean package -DskipTests
           ls -lh target/*.jar
