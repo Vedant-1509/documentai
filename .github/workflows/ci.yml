@@ -23,10 +23,6 @@ jobs:
           cd backend
           npm ci
 
-      - name: Build backend
-        run: |
-          cd backend
-          npm start
 
   frontend-react:
     name: Build React Frontend
