@@ -2,66 +2,48 @@ name: DocAI CI
 
 on:
   push:
-    branches: main
+    branches:
+      - main
 
 jobs:
-  backend-js:
-    name: Build Node.js Backend
+  build-all:
+    name: Build All Services
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      # Backend (Node.js)
+      - name: Set up Node.js for Backend
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install Backend Dependencies
         run: |
           cd backend
           npm ci
 
-
-  frontend-react:
-    name: Build React Frontend
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
+      # Frontend (React)
+      - name: Install Frontend Dependencies
         run: |
           cd frontend
           npm ci
 
-      - name: Build frontend
+      - name: Build Frontend
         run: |
           cd frontend
           npm run build
 
-  restapi-java:
-    name: Build Spring Boot REST API
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
+      # Spring Boot REST API
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build JAR
+      - name: Build Spring Boot JAR
         run: |
           cd restapi
           mvn clean package -DskipTests
