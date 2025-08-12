@@ -1,68 +1,41 @@
-name: DocAI CI
+name: Deploy to EC2
 
 on:
   push:
-    branches: main
+    branches: [ "main" ] # trigger only when main branch updates
 
 jobs:
-  backend-js:
-    name: Build Node.js Backend
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
+      # ===== REST API (Spring Boot) =====
+      - name: Build Spring Boot App
         run: |
-          cd backend
-          npm ci
-
-
-  frontend-react:
-    name: Build React Frontend
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm run build
-
-  restapi-java:
-    name: Build Spring Boot REST API
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Build JAR
-        run: |
-          cd restapi
+          cd restAPI
           mvn clean package -DskipTests
-          ls -lh target/*.jar
+          pm2 delete restapi || true
+          pm2 start "java -jar target/*.jar" --name restapi
+          cd ..
+
+      # ===== Web App (React) =====
+      - name: Build React App
+        run: |
+          cd webapp
+          npm install
+          npm run build
+          sudo rm -rf /var/www/html/*
+          sudo cp -r build/* /var/www/html/
+          cd ..
+
+      # ===== Another Service (Node.js) =====
+      - name: Build Node.js Service
+        run: |
+          cd nodeservice
+          npm install
+          pm2 delete nodeservice || true
+          pm2 start server.js --name nodeservice
+          cd ..
