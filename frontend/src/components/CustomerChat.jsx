@@ -29,23 +29,7 @@ export default function CustomerChatInterface({ user, onLogout }) {
     navigate('/login');
   };
 
-  // Load chat history when user is available
-  useEffect(() => {
-    if (!user?._id) return; // Prevent call if user isn't ready
 
-    const fetchChats = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/chat/history', {
-          params: { userId: user._id },
-        });
-        setChatHistory(res.data?.chats || []);
-      } catch (err) {
-        console.error('Error fetching chat history:', err);
-      }
-    };
-
-    fetchChats();
-  }, [user?._id]);
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -61,7 +45,7 @@ export default function CustomerChatInterface({ user, onLogout }) {
 
   try {
     // Step 1: Ask backend (DocAI)
-    const botRes = await axios.post('http://ec2-13-62-103-164.eu-north-1.compute.amazonaws.com:8080/api/ask', null, {
+    const botRes = await axios.post('http://localhost:8080/api/ask', null, {
       params: { companyName: user.businessName, question: currentQuestion },
     });
 
