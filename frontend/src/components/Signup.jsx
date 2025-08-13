@@ -43,7 +43,7 @@ export default function Signup() {
     
 
     try {
-      await axios.post("http://localhost:5000/api/auth/signup", dataToSend);
+      await axios.post("http://ec2-13-60-83-180.eu-north-1.compute.amazonaws.com:5000/api/auth/signup", dataToSend);
       setModalMessage("Signup successful. You can now login.");
       navigate("/login");
     } catch (err) {

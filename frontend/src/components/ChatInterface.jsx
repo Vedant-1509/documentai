@@ -44,14 +44,14 @@ export default function ChatInterface({ user, onLogout }) {
       let res;
 
       if (mode === 'stored') {
-        res = await axios.post('http://localhost:8080/api/ask', null, {
+        res = await axios.post('http://ec2-13-60-83-180.eu-north-1.compute.amazonaws.com:8080/api/ask', null, {
           params: { companyName: user.businessName, question: currentQuestion },
         });
       } else if (mode === 'crawl') {
         if (!url.trim()) {
           throw new Error('Please enter a website URL');
         }
-        res = await axios.post('http://localhost:8080/api/crawl-and-ask', null, {
+        res = await axios.post('http://ec2-13-60-83-180.eu-north-1.compute.amazonaws.com:8080/api/crawl-and-ask', null, {
           params: { url: url.trim(), companyName: user.businessName, question: currentQuestion },
         });
       } else if (mode === 'upload') {
@@ -63,7 +63,7 @@ export default function ChatInterface({ user, onLogout }) {
         formData.append('question', currentQuestion);
         formData.append('companyName', user.businessName);
 
-        res = await axios.post('http://localhost:8080/api/ask-from-file', formData, {
+        res = await axios.post('http://ec2-13-60-83-180.eu-north-1.compute.amazonaws.com:8080/api/ask-from-file', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }

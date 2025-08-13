@@ -45,7 +45,7 @@ export default function CustomerChatInterface({ user, onLogout }) {
 
   try {
     // Step 1: Ask backend (DocAI)
-    const botRes = await axios.post('http://localhost:8080/api/ask', null, {
+    const botRes = await axios.post('http://ec2-13-60-83-180.eu-north-1.compute.amazonaws.com:8080/api/ask', null, {
       params: { companyName: user.businessName, question: currentQuestion },
     });
 
