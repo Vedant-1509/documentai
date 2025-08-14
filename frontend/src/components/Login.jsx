@@ -28,7 +28,7 @@ export default function Login({ onLogin }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/auth/login", {
+      const res = await axios.post("http://ec2-13-48-248-53.eu-north-1.compute.amazonaws.com:5000/auth/login", {
         email,
         password,
       });
