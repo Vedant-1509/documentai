@@ -63,7 +63,7 @@ export default function ChatInterface({ user, onLogout }) {
         formData.append('question', currentQuestion);
         formData.append('companyName', user.businessName);
 
-        res = await axios.post('http:/16.170.249.229:8080/api/ask-from-file', formData, {
+        res = await axios.post('http://16.170.249.229:8080/api/ask-from-file', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
