@@ -28,7 +28,7 @@ export default function Login({ onLogin }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://16.170.249.229:5000/auth/login", {
+      const res = await axios.post("http://16.170.249.229:5000/api/auth/login", {
         email,
         password,
       });
